@@ -7,6 +7,7 @@ class triangulo
 public:
     triangulo();
     triangulo(int x, int y);
+    triangulo(QPointF* p);
     void setAngle(float theta);
     QPointF* punto;
     QPointF* wingA;
