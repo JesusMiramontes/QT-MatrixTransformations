@@ -25,6 +25,7 @@ public:
 
     QTimer* timer_rotacion;
     QTimer* timer_apuntar_al_centro;
+    QTimer* timer_mover_al_centro;
 
     QPointF* cuadrante_uno;
     QPointF* cuadrante_dos;
@@ -33,6 +34,11 @@ public:
     QPointF* centro;
     void configurarPlano();
     int global_angle;
+
+    QPointF* linea_horizontal_inicio;
+    QPointF* linea_horizontal_fin;
+    QPointF* linea_vertical_inicio;
+    QPointF* linea_vertical_fin;
 
     static QPointF *rotar(QPointF* posicion_actual, int angle, int length=3);
     void dibujarLineaWithAngle(int angle, QPointF *posicion_actual, int length=3);
@@ -44,6 +50,7 @@ public:
     void dibujarTriangulos();
     void dibujarLineas();
     void redibujar();
+    bool trasladarAlCentro(triangulo* t);
     ~MainWindow();
 
 private slots:
@@ -57,9 +64,12 @@ private slots:
 
     void on_btnApuntar_clicked();
 
+    void on_btnMover_clicked();
+
 public slots:
     void timerRotar();
     void timerApuntarAlCentro();
+    void timerMoverAlCentro();
 
 private:
     Ui::MainWindow *ui;

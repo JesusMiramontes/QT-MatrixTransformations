@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Declaracion de triangulos
     configurarPlano();
+    dibujarLineas();
     t1 = new triangulo(cuadrante_uno);
     t2 = new triangulo(cuadrante_dos);
     t3 = new triangulo(cuadrante_tres);
@@ -33,8 +34,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     timer_rotacion = new QTimer(this);
     timer_apuntar_al_centro = new QTimer(this);
+    timer_mover_al_centro = new QTimer(this);
+
     connect(timer_rotacion, SIGNAL(timeout()), this, SLOT(timerRotar()));
     connect(timer_apuntar_al_centro, SIGNAL(timeout()), this, SLOT(timerApuntarAlCentro()));
+    connect(timer_mover_al_centro, SIGNAL(timeout()), this, SLOT(timerMoverAlCentro()));
 }
 
 void MainWindow::configurarPlano()
@@ -43,13 +47,13 @@ void MainWindow::configurarPlano()
     float y =  ui->drawing_area->height()/2;
     centro = new QPointF(x,y);
 
-    QPointF* linea_horizontal_inicio = new QPointF(0,y);
-    QPointF* linea_horizontal_fin = new QPointF(ui->drawing_area->width(),y);
-    dibujarLinea(linea_horizontal_inicio, linea_horizontal_fin);
+    linea_horizontal_inicio = new QPointF(0,y);
+    linea_horizontal_fin = new QPointF(ui->drawing_area->width(),y);
 
-    QPointF* linea_vertical_inicio = new QPointF(x,0);
-    QPointF* linea_vertical_fin = new QPointF(x,ui->drawing_area->height());
-    dibujarLinea(linea_vertical_inicio, linea_vertical_fin);
+
+    linea_vertical_inicio = new QPointF(x,0);
+    linea_vertical_fin = new QPointF(x,ui->drawing_area->height());
+
 
     cuadrante_uno = new QPointF();
     cuadrante_uno->setX(centro->x() + (ui->drawing_area->width()/4));
@@ -133,9 +137,9 @@ void MainWindow::dibujarTriangulo(triangulo *t)
 // Borra lo que esté dibujado en el label
 void MainWindow::update_canvas()
 {
-    pix = new QPixmap(ui->drawing_area->width(), ui->drawing_area->height()); //Tamaño canvas
+    //pix = new QPixmap(ui->drawing_area->width(), ui->drawing_area->height()); //Tamaño canvas
     pix->fill(Qt::black); //Fondo
-    paint = new QPainter(pix);
+    //paint = new QPainter(pix);
 }
 
 void MainWindow::girarTriangulos(float theta)
@@ -156,14 +160,46 @@ void MainWindow::dibujarTriangulos()
 
 void MainWindow::dibujarLineas()
 {
-
+    dibujarLinea(linea_horizontal_inicio, linea_horizontal_fin);
+    dibujarLinea(linea_vertical_inicio, linea_vertical_fin);
 }
 
 void MainWindow::redibujar()
 {
     update_canvas();
-    configurarPlano();
+    dibujarLineas();
     dibujarTriangulos();
+}
+
+bool MainWindow::trasladarAlCentro(triangulo *t)
+{
+    bool fx, fy;
+    fx = false;
+    fy = false;
+
+    if(t->punto->x() > centro->x()){
+        t->setPosition(t->punto->x()-1, t->punto->y());
+    } else if (t->punto->x() < centro->x()){
+        t->setPosition(t->punto->x()+1, t->punto->y());
+    } else{
+        fx = true;
+    }
+
+    if(t->punto->y() > centro->y()){
+        t->setPosition(t->punto->x(), t->punto->y()-1);
+    } else if(t->punto->y() < centro->y()){
+        t->setPosition(t->punto->x(), t->punto->y()+1);
+    } else{
+        fy = true;
+    }
+
+    redibujar();
+
+    if (fx && fy){
+        return true;
+    } else {
+        return false;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -180,9 +216,9 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     girarTriangulos((float)value);
     update_canvas();
-    configurarPlano();
+    //configurarPlano();
     //dibujarLineas();
-    dibujarTriangulos();
+    redibujar();
 }
 
 void MainWindow::timerRotar()
@@ -192,9 +228,10 @@ void MainWindow::timerRotar()
     global_angle ++;
     girarTriangulos(global_angle);
     update_canvas();
-    configurarPlano();
+    //configurarPlano();
     //dibujarLineas();
-    dibujarTriangulos();
+    //dibujarTriangulos();
+    redibujar();
     ui->label->setText(QString::number(global_angle));
 }
 
@@ -244,6 +281,14 @@ void MainWindow::timerApuntarAlCentro()
 
 }
 
+void MainWindow::timerMoverAlCentro()
+{
+    trasladarAlCentro(t1);
+    trasladarAlCentro(t2);
+    trasladarAlCentro(t3);
+    trasladarAlCentro(t4);
+}
+
 void MainWindow::on_btnGirar_clicked()
 {
     timer_rotacion->start(50);
@@ -257,4 +302,9 @@ void MainWindow::on_btnDetener_clicked()
 void MainWindow::on_btnApuntar_clicked()
 {
     timer_apuntar_al_centro->start(5);
+}
+
+void MainWindow::on_btnMover_clicked()
+{
+    timer_mover_al_centro->start(50);
 }
