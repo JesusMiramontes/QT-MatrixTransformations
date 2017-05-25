@@ -19,28 +19,39 @@ MainWindow::MainWindow(QWidget *parent) :
 
     paint = new QPainter(pix);
 
-    // Declaracion de triangulos
+    // Configura los cuadrantes
     configurarPlano();
+
+    // Dibuja las lineas separadoras
     dibujarLineas();
+
+    // Asigna un triangulo a cada cuadrante
     t1 = new triangulo(cuadrante_uno);
     t2 = new triangulo(cuadrante_dos);
     t3 = new triangulo(cuadrante_tres);
     t4 = new triangulo(cuadrante_cuatro);
 
-    //girarTriangulos();
+    // Dibuja los triangulos
     dibujarTriangulos();
 
+    // El angulo inicial de cada triangulo es 90
+    // Esta variable se usa en el giro
     global_angle = 90;
 
+    // Configura los timers
     timer_rotacion = new QTimer(this);
     timer_apuntar_al_centro = new QTimer(this);
     timer_mover_al_centro = new QTimer(this);
+    timer_helice = new QTimer(this);
 
+    // Crea las coneciones a los eventos
     connect(timer_rotacion, SIGNAL(timeout()), this, SLOT(timerRotar()));
     connect(timer_apuntar_al_centro, SIGNAL(timeout()), this, SLOT(timerApuntarAlCentro()));
     connect(timer_mover_al_centro, SIGNAL(timeout()), this, SLOT(timerMoverAlCentro()));
+    connect(timer_helice, SIGNAL(timeout()), this, SLOT(timerHelice()));
 }
 
+// Obtiene el centro del lienzo, establece las coordenadas de las lineas que separan el plano
 void MainWindow::configurarPlano()
 {
     float x = (ui->drawing_area->width()/2);
@@ -142,6 +153,7 @@ void MainWindow::update_canvas()
     //paint = new QPainter(pix);
 }
 
+// Gira todos los triangulos al mismo tiempo en base a un ángulo
 void MainWindow::girarTriangulos(float theta)
 {
     t1->setAngle(theta);
@@ -151,6 +163,7 @@ void MainWindow::girarTriangulos(float theta)
     qDebug() << t1->getAngle() << " " << t2->getAngle() << " " << t3->getAngle() << " " << t4->getAngle() << " ";
 }
 
+// Dibuja todos los triangulos
 void MainWindow::dibujarTriangulos()
 {
     dibujarTriangulo(t1);
@@ -159,12 +172,14 @@ void MainWindow::dibujarTriangulos()
     dibujarTriangulo(t4);
 }
 
+// Dibuja las lineas separadoras
 void MainWindow::dibujarLineas()
 {
     dibujarLinea(linea_horizontal_inicio, linea_horizontal_fin);
     dibujarLinea(linea_vertical_inicio, linea_vertical_fin);
 }
 
+// Limpia el lienzo, dibuja las lineas, y los triangulos
 void MainWindow::redibujar()
 {
     update_canvas();
@@ -172,12 +187,15 @@ void MainWindow::redibujar()
     dibujarTriangulos();
 }
 
+// Mueve el triangulo t al centro
 bool MainWindow::trasladarAlCentro(triangulo *t)
 {
+    // Banderas que indican si X y Y ya se encuentran en el centro
     bool fx, fy;
     fx = false;
     fy = false;
 
+    // Manipula X
     if(t->punto->x() > centro->x()){
         t->setPosition(t->punto->x()-1, t->punto->y());
     } else if (t->punto->x() < centro->x()){
@@ -186,6 +204,7 @@ bool MainWindow::trasladarAlCentro(triangulo *t)
         fx = true;
     }
 
+    // Manipula Y
     if(t->punto->y() > centro->y()){
         t->setPosition(t->punto->x(), t->punto->y()-1);
     } else if(t->punto->y() < centro->y()){
@@ -196,6 +215,7 @@ bool MainWindow::trasladarAlCentro(triangulo *t)
 
     redibujar();
 
+    // Si X y Y estan en el centro regresa true
     if (fx && fy){
         return true;
     } else {
@@ -213,31 +233,36 @@ void MainWindow::on_btnGirarTriangulos_clicked()
 
 }
 
+// Gira todos los triangulos en base al angulo que proporciones el slider
 void MainWindow::on_horizontalSlider_valueChanged(int value)
 {
     girarTriangulos((float)value);
     update_canvas();
-    //configurarPlano();
-    //dibujarLineas();
     redibujar();
 }
 
+// Metodo que se ejecuta en cada tick del timer_rotar
+// gira todos los angulos simultaneamente
 void MainWindow::timerRotar()
 {
+    // Dado que el angulo 450 es igual a 90 se regresa a 90
     if (global_angle >= 450)
         global_angle = 90;
+
+    // en cada iteracion aumenta el angulo en uno
     global_angle ++;
+
+    // Gira todos los triangulos en base al global_angle
     girarTriangulos(global_angle);
-    update_canvas();
-    //configurarPlano();
-    //dibujarLineas();
-    //dibujarTriangulos();
+
     redibujar();
     ui->label->setText(QString::number(global_angle));
 }
 
+// metodo que se ejecuta en cada tick del timer_apuntar
 void MainWindow::timerApuntarAlCentro()
 {
+    // Banderas que indican si los triangulos ya apuntan al centro
     bool f1, f2, f3, f4;
     f1 = false;
     f2 = false;
@@ -247,7 +272,7 @@ void MainWindow::timerApuntarAlCentro()
     if (t4->getAngle() > 450)
         t4->setAngle(90);
 
-    //qDebug() << t4->getAngle();
+    // Compara los angulos de cada triangulo y los altera hasta que llegan al deseado
     if(t4->getAngle() != 135){
         t4->setAngle(t4->getAngle()+1);
         redibujar();
@@ -286,17 +311,30 @@ void MainWindow::timerApuntarAlCentro()
     qDebug() << t1->getAngle() << " " << t2->getAngle() << " " << t3->getAngle() << " " << t4->getAngle() << " ";
 }
 
+// Metodo que se ejecuta en cada tick del timer timer_mover_al_centro
 void MainWindow::timerMoverAlCentro()
 {
+    // Traslada todos los triangulos al centro
     trasladarAlCentro(t1);
     trasladarAlCentro(t2);
     trasladarAlCentro(t3);
     trasladarAlCentro(t4);
 }
 
+// metodo que se ejecuta a cada tick de timer_helice
+void MainWindow::timerHelice()
+{
+    // Le suma uno al angulo de cada triangulo
+    t1->addAngle(1);
+    t2->addAngle(1);
+    t3->addAngle(1);
+    t4->addAngle(1);
+    redibujar();
+}
+
 void MainWindow::on_btnGirar_clicked()
 {
-    timer_rotacion->start(50);
+    timer_rotacion->start(5);
 }
 
 void MainWindow::on_btnDetener_clicked()
@@ -311,7 +349,7 @@ void MainWindow::on_btnApuntar_clicked()
 
 void MainWindow::on_btnMover_clicked()
 {
-    timer_mover_al_centro->start(50);
+    timer_mover_al_centro->start(5);
 }
 
 void MainWindow::on_btnDetenerApuntar_clicked()
@@ -322,4 +360,14 @@ void MainWindow::on_btnDetenerApuntar_clicked()
 void MainWindow::on_btnDetenerMover_clicked()
 {
     timer_mover_al_centro->stop();
+}
+
+void MainWindow::on_btnHelice_clicked()
+{
+    timer_helice->start(5);
+}
+
+void MainWindow::on_btnDetenerHelice_clicked()
+{
+    timer_helice->stop();
 }

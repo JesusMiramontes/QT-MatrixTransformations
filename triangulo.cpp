@@ -25,6 +25,8 @@ triangulo::triangulo(QPointF *p)
 void triangulo::setAngle(float theta)
 {
     angle = theta;
+    if (angle >= 450)
+        angle=90;
     wingA = MainWindow::rotar(punto,angle+30,100);
     wingB = MainWindow::rotar(punto,angle-30,100);
 }
@@ -32,6 +34,8 @@ void triangulo::setAngle(float theta)
 void triangulo::addAngle(float theta)
 {
     angle += theta;
+    if (angle >= 450)
+        angle=90;
     wingA = MainWindow::rotar(punto,angle+30,100);
     wingB = MainWindow::rotar(punto,angle-30,100);
 }
