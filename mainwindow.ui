@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>754</width>
-    <height>593</height>
+    <height>619</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,29 +30,6 @@
      <string>TextLabel</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="iTheta">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>510</y>
-      <width>113</width>
-      <height>20</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btnGirarTriangulos">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>510</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QSlider" name="horizontalSlider">
     <property name="geometry">
      <rect>
@@ -72,6 +49,32 @@
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnGirar">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>500</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Girar</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btnDetener">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>530</y>
+      <width>80</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Detener</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -79,7 +82,7 @@
      <x>0</x>
      <y>0</y>
      <width>754</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

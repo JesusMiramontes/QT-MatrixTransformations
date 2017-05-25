@@ -27,6 +27,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //girarTriangulos();
     dibujarTriangulos();
+
+    global_angle = 90;
+
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(timerFunction()));
+
 }
 
 void MainWindow::configurarPlano()
@@ -99,8 +105,8 @@ void MainWindow::dibujarLinea(QPointF *p1, QPointF *p2, int width)
     pen.setStyle(Qt::SolidLine); //Estilo de linea
     pen.setWidth(width); //Ancho de linea
     pen.setBrush(Qt::green); //Color de lina
-    pen.setCapStyle(Qt::SquareCap); //Forma de extremos de lina (cuadrado, redondeado, etc)
-    //pen.setJoinStyle(Qt::RoundJoin);
+    pen.setCapStyle(Qt::RoundCap); //Forma de extremos de lina (cuadrado, redondeado, etc)
+    pen.setJoinStyle(Qt::RoundJoin);
 
     paint->setPen(pen); //Color separador
     paint->drawLine(*p1, *p2);
@@ -168,4 +174,26 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     configurarPlano();
     //dibujarLineas();
     dibujarTriangulos();
+}
+
+void MainWindow::timerFunction()
+{
+    if (global_angle >= 450)
+        global_angle = 90;
+    global_angle ++;
+    girarTriangulos(global_angle);
+    update_canvas();
+    configurarPlano();
+    //dibujarLineas();
+    dibujarTriangulos();
+}
+
+void MainWindow::on_btnGirar_clicked()
+{
+    timer->start(50);
+}
+
+void MainWindow::on_btnDetener_clicked()
+{
+    timer->stop();
 }

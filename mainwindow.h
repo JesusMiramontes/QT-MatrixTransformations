@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "triangulo.h"
 #include "QPointF"
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -21,12 +22,14 @@ public:
     triangulo* t2;
     triangulo* t3;
     triangulo* t4;
+    QTimer* timer;
     QPointF* cuadrante_uno;
     QPointF* cuadrante_dos;
     QPointF* cuadrante_tres;
     QPointF* cuadrante_cuatro;
     QPointF* centro;
     void configurarPlano();
+    int global_angle;
 
     static QPointF *rotar(QPointF* posicion_actual, int angle, int length=3);
     void dibujarLineaWithAngle(int angle, QPointF *posicion_actual, int length=3);
@@ -43,6 +46,13 @@ private slots:
     void on_btnGirarTriangulos_clicked();
 
     void on_horizontalSlider_valueChanged(int value);
+
+    void on_btnGirar_clicked();
+
+    void on_btnDetener_clicked();
+
+public slots:
+    void timerFunction();
 
 private:
     Ui::MainWindow *ui;
