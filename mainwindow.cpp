@@ -6,6 +6,7 @@
 #include <math.h>
 #include "triangulo.h"
 #include "QDebug"
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -49,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(timer_apuntar_al_centro, SIGNAL(timeout()), this, SLOT(timerApuntarAlCentro()));
     connect(timer_mover_al_centro, SIGNAL(timeout()), this, SLOT(timerMoverAlCentro()));
     connect(timer_helice, SIGNAL(timeout()), this, SLOT(timerHelice()));
+
+    // Explicación de los botones
+    QMessageBox msgBox;
+    msgBox.setText("Girar => Gira los triangulos sobre un punto fijo.\nApuntar => Apunta los triangulos hacía el centro\nMover => Mueve los triangulos al centro.\nHelice => Efecto de helice.\nNota: Pueden ejecutarse varias acciones al mismo tiempo, el resultado varía.");
+    msgBox.exec();
 }
 
 // Obtiene el centro del lienzo, establece las coordenadas de las lineas que separan el plano
