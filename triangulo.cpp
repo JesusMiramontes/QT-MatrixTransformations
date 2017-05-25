@@ -29,6 +29,13 @@ void triangulo::setAngle(float theta)
     wingB = MainWindow::rotar(punto,angle-30,100);
 }
 
+void triangulo::addAngle(float theta)
+{
+    angle += theta;
+    wingA = MainWindow::rotar(punto,angle+30,100);
+    wingB = MainWindow::rotar(punto,angle-30,100);
+}
+
 void triangulo::setPosition(int x, int y)
 {
     punto = (new QPointF(x,y));

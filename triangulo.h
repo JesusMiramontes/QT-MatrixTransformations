@@ -9,6 +9,7 @@ public:
     triangulo(int x, int y);
     triangulo(QPointF* p);
     void setAngle(float theta);
+    void addAngle(float theta);
     void setPosition(int x, int y);
     int getAngle();
     QPointF* punto;

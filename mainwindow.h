@@ -66,6 +66,10 @@ private slots:
 
     void on_btnMover_clicked();
 
+    void on_btnDetenerApuntar_clicked();
+
+    void on_btnDetenerMover_clicked();
+
 public slots:
     void timerRotar();
     void timerApuntarAlCentro();

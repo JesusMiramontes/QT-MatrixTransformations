@@ -148,6 +148,7 @@ void MainWindow::girarTriangulos(float theta)
     t2->setAngle(theta);
     t3->setAngle(theta);
     t4->setAngle(theta);
+    qDebug() << t1->getAngle() << " " << t2->getAngle() << " " << t3->getAngle() << " " << t4->getAngle() << " ";
 }
 
 void MainWindow::dibujarTriangulos()
@@ -243,6 +244,9 @@ void MainWindow::timerApuntarAlCentro()
     f3 = false;
     f4 = false;
 
+    if (t4->getAngle() > 450)
+        t4->setAngle(90);
+
     //qDebug() << t4->getAngle();
     if(t4->getAngle() != 135){
         t4->setAngle(t4->getAngle()+1);
@@ -279,6 +283,7 @@ void MainWindow::timerApuntarAlCentro()
     if (f1 && f2 && f3 && f4)
         timer_apuntar_al_centro->stop();
 
+    qDebug() << t1->getAngle() << " " << t2->getAngle() << " " << t3->getAngle() << " " << t4->getAngle() << " ";
 }
 
 void MainWindow::timerMoverAlCentro()
@@ -307,4 +312,14 @@ void MainWindow::on_btnApuntar_clicked()
 void MainWindow::on_btnMover_clicked()
 {
     timer_mover_al_centro->start(50);
+}
+
+void MainWindow::on_btnDetenerApuntar_clicked()
+{
+    timer_apuntar_al_centro->stop();
+}
+
+void MainWindow::on_btnDetenerMover_clicked()
+{
+    timer_mover_al_centro->stop();
 }
