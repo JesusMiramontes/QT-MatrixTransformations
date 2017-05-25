@@ -28,3 +28,8 @@ void triangulo::setAngle(float theta)
     wingA = MainWindow::rotar(punto,angle+30,100);
     wingB = MainWindow::rotar(punto,angle-30,100);
 }
+
+int triangulo::getAngle()
+{
+    return this->angle;
+}

@@ -5,6 +5,7 @@
 #include <QtMath>
 #include <math.h>
 #include "triangulo.h"
+#include "QDebug"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,9 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     global_angle = 90;
 
-    timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerFunction()));
-
+    timer_rotacion = new QTimer(this);
+    timer_apuntar_al_centro = new QTimer(this);
+    connect(timer_rotacion, SIGNAL(timeout()), this, SLOT(timerRotar()));
+    connect(timer_apuntar_al_centro, SIGNAL(timeout()), this, SLOT(timerApuntarAlCentro()));
 }
 
 void MainWindow::configurarPlano()
@@ -157,6 +159,13 @@ void MainWindow::dibujarLineas()
 
 }
 
+void MainWindow::redibujar()
+{
+    update_canvas();
+    configurarPlano();
+    dibujarTriangulos();
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -176,7 +185,7 @@ void MainWindow::on_horizontalSlider_valueChanged(int value)
     dibujarTriangulos();
 }
 
-void MainWindow::timerFunction()
+void MainWindow::timerRotar()
 {
     if (global_angle >= 450)
         global_angle = 90;
@@ -186,14 +195,66 @@ void MainWindow::timerFunction()
     configurarPlano();
     //dibujarLineas();
     dibujarTriangulos();
+    ui->label->setText(QString::number(global_angle));
+}
+
+void MainWindow::timerApuntarAlCentro()
+{
+    bool f1, f2, f3, f4;
+    f1 = false;
+    f2 = false;
+    f3 = false;
+    f4 = false;
+
+    //qDebug() << t4->getAngle();
+    if(t4->getAngle() != 135){
+        t4->setAngle(t4->getAngle()+1);
+        redibujar();
+    }
+    else{
+        f4 = true;
+    }
+
+    if(t3->getAngle() != 225){
+        t3->setAngle(t3->getAngle()+1);
+        redibujar();
+    }
+    else{
+        f3 = true;
+    }
+
+    if(t2->getAngle() != 405){
+        t2->setAngle(t2->getAngle()+1);
+        redibujar();
+    }
+    else{
+        f2 = true;
+    }
+
+    if(t1->getAngle() != 315){
+        t1->setAngle(t1->getAngle()+1);
+        redibujar();
+    }
+    else{
+        f1 = true;
+    }
+
+    if (f1 && f2 && f3 && f4)
+        timer_apuntar_al_centro->stop();
+
 }
 
 void MainWindow::on_btnGirar_clicked()
 {
-    timer->start(50);
+    timer_rotacion->start(50);
 }
 
 void MainWindow::on_btnDetener_clicked()
 {
-    timer->stop();
+    timer_rotacion->stop();
+}
+
+void MainWindow::on_btnApuntar_clicked()
+{
+    timer_apuntar_al_centro->start(5);
 }

@@ -22,7 +22,10 @@ public:
     triangulo* t2;
     triangulo* t3;
     triangulo* t4;
-    QTimer* timer;
+
+    QTimer* timer_rotacion;
+    QTimer* timer_apuntar_al_centro;
+
     QPointF* cuadrante_uno;
     QPointF* cuadrante_dos;
     QPointF* cuadrante_tres;
@@ -40,6 +43,7 @@ public:
     void girarTriangulos(float theta);
     void dibujarTriangulos();
     void dibujarLineas();
+    void redibujar();
     ~MainWindow();
 
 private slots:
@@ -51,8 +55,11 @@ private slots:
 
     void on_btnDetener_clicked();
 
+    void on_btnApuntar_clicked();
+
 public slots:
-    void timerFunction();
+    void timerRotar();
+    void timerApuntarAlCentro();
 
 private:
     Ui::MainWindow *ui;
